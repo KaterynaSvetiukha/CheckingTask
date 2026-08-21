@@ -14,7 +14,6 @@ export interface Task {
   assignees?: User[]
   author: User["id"]
   columnId: string
-  position: number
 }
 
 export interface CreateTaskInput {
@@ -27,16 +26,7 @@ export interface CreateTaskInput {
   columnId: string
 }
 
-export type UpdateTaskInput = Partial<{
-  title: string
-  description?: string
-  tag?: Tag[]
-  priority: Priority
-  timeTo: string
-  assigneesIds?: string[]
-  columnId: string
-  position: number
-}>
+export type UpdateTaskInput = Partial<CreateTaskInput>
 
 export interface Tag {
   id: string
