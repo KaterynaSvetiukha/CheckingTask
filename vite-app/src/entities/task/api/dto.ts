@@ -1,4 +1,5 @@
-import type { User } from "@/entities/user/model/types"
+import type { ColumnDTO } from "@/entities/column/api/dto"
+import type { UserResponseDTO } from "@/entities/user/api/dto"
 
 export type Priority = "low" | "medium" | "high"
 
@@ -6,28 +7,34 @@ export interface TaskResponseDTO {
   id: string
   title: string
   description?: string
-  tag?: string[]
+  tag?: TagDTO["id"][]
   priority: Priority
   timeTo: string
   createdAt: string
   updatedAt?: string
-  assignees?: string[]
-  author: User
-  columnId: string
+  assignees?: UserResponseDTO["id"][]
+  author: UserResponseDTO["id"]
+  columnId: ColumnDTO["id"]
   position: string
 }
 
 export interface CreateTaskDTO {
   title: string
   description?: string
-  tag?: string[]
+  tag?: TagDTO["id"][]
   priority: Priority
   timeTo: string
-  assignees?: string[]
-  columnId: string
+  assignees?: UserResponseDTO["id"][]
+  columnId: ColumnDTO['id']
 }
 
 export type UpdateTaskDTO = Partial<CreateTaskDTO>
+
+export interface TagDTO {
+  id: string
+  name: string
+  color: string
+}
 
 export interface TagCreateDTO {
   name: string

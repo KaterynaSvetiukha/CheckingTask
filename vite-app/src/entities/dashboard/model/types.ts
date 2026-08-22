@@ -5,7 +5,7 @@ export interface Dashboard {
   id: string
   name: string
   columns?: Column["id"][]
-  author: User
+  author: User['id']
   members?: User["id"][]
   createdAt: Date
   updatedAt?: Date
