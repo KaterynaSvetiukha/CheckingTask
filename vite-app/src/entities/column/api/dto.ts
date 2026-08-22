@@ -1,9 +1,11 @@
+import type { TaskResponseDTO } from "@/entities/task/api/dto"
+
 export type Status =
   "backlog" | "ready" | "in_progress" | "in_viewer" | "done" | "overdue"
 
 export interface ColumnDTO {
   id: string
-  tasks?: string[]
+  tasks?: TaskResponseDTO['id'][]
   status: Status
 }
 
@@ -13,5 +15,5 @@ export interface CreateColumnDTO {
 
 export interface UpdateColumnDTO {
   status: Status
-  tasks?: string[]
+  tasks?: TaskResponseDTO["id"][]
 }
