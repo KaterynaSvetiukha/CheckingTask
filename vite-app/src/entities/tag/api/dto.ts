@@ -1,10 +1,10 @@
-export interface TagDTO {
-    id: string
-    name: string
-    color: string
+export interface TagResponseDTO {
+  id: string
+  name: string
+  color: string
 }
 
-export interface TagCreateDTO {
-    name: string
-    color: string
+export interface CreateTagDTO {
+  name: string
+  color: string
 }
