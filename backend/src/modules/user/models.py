@@ -8,8 +8,12 @@ class UserModel(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid7)
     username = Column(String(100), nullable=False, unique=True)
-    email = Column(String(256), nullable=False, index=True, unique=True)
+    email = Column(String(256), nullable=False, unique=True)
     password = Column(String(256), nullable=False)
+
+    __table_args__ = (
+        Index('idx_username_email', 'username', 'email')
+    )
 
 class AssigneeModel(Base):
     __tablename__ = 'assignees'
