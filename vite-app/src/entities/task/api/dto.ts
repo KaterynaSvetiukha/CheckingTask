@@ -2,35 +2,34 @@ import type { User } from "@/entities/user/model/types"
 
 export type Priority = "low" | "medium" | "high"
 
-export interface Task {
+export interface TaskResponseDTO {
   id: string
   title: string
   description?: string
-  tag?: Tag["id"][]
+  tag?: string[]
   priority: Priority
   timeTo: string
-  createdAt: Date
-  updatedAt?: Date
-  assignees?: User["id"][]
-  author: User["id"]
+  createdAt: string
+  updatedAt?: string
+  assignees?: string[]
+  author: User
   columnId: string
   position: string
 }
 
-export interface CreateTaskInput {
+export interface CreateTaskDTO {
   title: string
   description?: string
-  tag?: Tag["id"][]
+  tag?: string[]
   priority: Priority
   timeTo: string
-  assignees?: User["id"][]
+  assignees?: string[]
   columnId: string
 }
 
-export type UpdateTaskInput = Partial<CreateTaskInput>
+export type UpdateTaskDTO = Partial<CreateTaskDTO>
 
-export interface Tag {
-  id: string
+export interface TagCreateDTO {
   name: string
   color: string
 }

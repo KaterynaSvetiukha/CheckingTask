@@ -7,8 +7,8 @@ export interface Dashboard {
   columns?: Column["id"][]
   author: User
   members?: User["id"][]
-  createdAt: string
-  updatedAt?: string
+  createdAt: Date
+  updatedAt?: Date
 }
 
 export interface CreateDashboardInput {
