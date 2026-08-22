@@ -1,3 +1,4 @@
+import type { Tag } from "@/entities/tag/model/types";
 import type { User } from "@/entities/user/model/types"
 
 export type Priority = "low" | "medium" | "high"
@@ -28,9 +29,3 @@ export interface CreateTaskInput {
 }
 
 export type UpdateTaskInput = Partial<CreateTaskInput>
-
-export interface Tag {
-  id: string
-  name: string
-  color: string
-}
