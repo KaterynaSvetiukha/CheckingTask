@@ -5,10 +5,10 @@ export interface Dashboard {
   id: string
   name: string
   columns?: Column["id"][]
-  author: User
+  author: User['id']
   members?: User["id"][]
-  createdAt: string
-  updatedAt?: string
+  createdAt: Date
+  updatedAt?: Date
 }
 
 export interface CreateDashboardInput {
