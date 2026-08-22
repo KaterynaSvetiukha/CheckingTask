@@ -18,7 +18,7 @@ export interface TaskResponseDTO {
 export interface CreateTaskDTO {
   title: string
   description?: string
-  tag?: string
+  tag?: string[]
   priority: Priority
   timeTo: string
   assignees?: string[]
