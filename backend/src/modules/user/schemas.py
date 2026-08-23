@@ -1,5 +1,4 @@
-from pydantic import BaseModel, ConfigDict
-from typing import List, Optional
+from pydantic import BaseModel, ConfigDict, Field
 from uuid import UUID
 
 class Register(BaseModel):
@@ -15,6 +14,6 @@ class UserResponse(BaseModel):
     id: UUID
     username: str
     email: str
-    dashboards: Optional[List[UUID]] = []
+    dashboards: list[UUID] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from typing import List, Optional
 from uuid import UUID
 import enum
@@ -13,7 +13,7 @@ class StatusEnum(str, enum.Enum):
 
 class ColumnResponse(BaseModel):
     id: UUID
-    tasks: Optional[List[UUID]] = []
+    tasks: list[UUID] = Field(default_factory=list)
     status: StatusEnum
 
     model_config = ConfigDict(from_attributes=True)
@@ -23,4 +23,4 @@ class CreateColumn(BaseModel):
 
 class UpdateColumn(BaseModel):
     status: Optional[StatusEnum] = None
-    tasks: Optional[List[UUID]] = None
+    tasks: Optional[list[UUID]] = None
