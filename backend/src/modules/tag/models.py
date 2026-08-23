@@ -24,5 +24,5 @@ class TaskTag(Base):
     task_id = Column(UUID(as_uuid=True), ForeignKey("tasks.id", ondelete="CASCADE"), primary_key=True)
 
     __table_args__ = (
-        Index('idx_task_tag_task_id', 'task_id')
+        Index('idx_task_tag_task_id', 'task_id'),
     )

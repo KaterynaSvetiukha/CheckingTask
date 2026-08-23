@@ -27,7 +27,7 @@ class TaskModel(Base):
     author_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
 
     __table_args__ = (
-        Index("idx_column_position", "column_id", "position")
+        Index("idx_column_position", "column_id", "position"),
     )
 
     column = relationship(

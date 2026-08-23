@@ -13,7 +13,7 @@ class UserModel(Base):
     password = Column(String(256), nullable=False)
 
     __table_args__ = (
-        Index('idx_username_email', 'username', 'email')
+        Index('idx_username_email', 'username', 'email'),
     )
 
     dashboards = relationship(
@@ -47,7 +47,7 @@ class AssigneeModel(Base):
     task_id = Column(UUID(as_uuid=True), ForeignKey("tasks.id", ondelete="CASCADE"), primary_key=True)
 
     __table_args__ = (
-        Index('idx_assignee_task_id', 'task_id')
+        Index('idx_assignee_task_id', 'task_id'),
     )
 
 class ViewerModel(Base):
@@ -57,5 +57,5 @@ class ViewerModel(Base):
     dashboard_id = Column(UUID(as_uuid=True), ForeignKey("dashboards.id", ondelete="CASCADE"), primary_key=True)
 
     __table_args__ = (
-        Index('idx_viewer_dashboard_id', 'dashboard_id')
+        Index('idx_viewer_dashboard_id', 'dashboard_id'),
     )
