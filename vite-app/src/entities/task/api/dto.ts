@@ -4,9 +4,9 @@ export interface TaskResponseDTO {
   id: string
   title: string
   description?: string
-  tag?: string[]
+  tags?: string[]
   priority: Priority
-  timeTo: string
+  timeTo?: string
   createdAt: string
   updatedAt?: string
   assignees?: string[]
@@ -18,9 +18,9 @@ export interface TaskResponseDTO {
 export interface CreateTaskDTO {
   title: string
   description?: string
-  tag?: string[]
+  tags?: string[]
   priority: Priority
-  timeTo: string
+  timeTo?: string
   assignees?: string[]
   columnId: string
 }

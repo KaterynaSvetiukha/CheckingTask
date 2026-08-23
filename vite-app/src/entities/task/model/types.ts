@@ -7,9 +7,9 @@ export interface Task {
   id: string
   title: string
   description?: string
-  tag?: Tag["id"][]
+  tags?: Tag["id"][]
   priority: Priority
-  timeTo: string
+  timeTo?: string
   createdAt: Date
   updatedAt?: Date
   assignees?: User["id"][]
@@ -21,9 +21,9 @@ export interface Task {
 export interface CreateTaskInput {
   title: string
   description?: string
-  tag?: Tag["id"][]
+  tags?: Tag["id"][]
   priority: Priority
-  timeTo: string
+  timeTo?: string
   assignees?: User["id"][]
   columnId: string
 }
