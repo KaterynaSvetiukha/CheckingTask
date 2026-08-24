@@ -33,6 +33,8 @@ class CreateTask(BaseModel):
     time_to: Optional[datetime] = None
     assignees: list[UUID] = Field(default_factory=list)
     column_id: UUID
+    author_id: UUID
+    position: str
 
 class UpdateTask(BaseModel):
     title: Optional[str] = None
@@ -42,3 +44,5 @@ class UpdateTask(BaseModel):
     time_to: Optional[datetime] = None
     assignees: Optional[list[UUID]] = None
     column_id: Optional[UUID] = None
+    author_id: Optional[UUID] = None
+    position: Optional[str] = None

@@ -5,4 +5,8 @@ from src.core.config import setting
 engine = create_async_engine(setting.DATABASE_URL_asyncpg, echo=True)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
+async def get_db():
+    async with async_session_maker() as session:
+        yield session
+
 Base = declarative_base()
