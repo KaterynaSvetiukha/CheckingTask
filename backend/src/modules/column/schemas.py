@@ -22,5 +22,5 @@ class CreateColumn(BaseModel):
     status: StatusEnum
 
 class UpdateColumn(BaseModel):
-    status: Optional[StatusEnum] = None
+    status: StatusEnum
     tasks: Optional[list[UUID]] = None

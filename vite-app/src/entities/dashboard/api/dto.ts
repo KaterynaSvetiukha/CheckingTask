@@ -1,16 +1,16 @@
 export interface DashboardResponseDTO {
   id: string
   name: string
-  columns?: string[]
-  author: string
-  members?: string[]
-  createdAt: string
-  updatedAt?: string
+  columns: string[]
+  author_id: string
+  members: string[]
+  created_at: string
+  updated_at: string | null,
 }
 
 export interface CreateDashboardDTO {
   name: string
-  members?: string[]
+  members: string[]
 }
 
 export type UpdateDashboardDTO = Partial<{

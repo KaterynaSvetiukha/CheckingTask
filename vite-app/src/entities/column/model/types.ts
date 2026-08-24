@@ -5,6 +5,6 @@ export type Status =
 
 export interface Column {
   id: string
-  tasks?: Task['id'][]
+  tasks: Task['id'][]
   status: Status
 }
