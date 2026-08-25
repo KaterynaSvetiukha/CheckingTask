@@ -1,5 +1,5 @@
-from models import TaskModel
-from schemas import TaskResponse
+from .models import TaskModel
+from .schemas import TaskResponse
 
 def task_to_response(task: TaskModel) -> TaskResponse:
     return TaskResponse(

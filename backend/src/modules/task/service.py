@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from .models import TaskModel
 from .schemas import CreateTask, UpdateTask
-from mapper import task_to_response
+from .mapper import task_to_response
 
 async def get_all_task(session: AsyncSession):
     result = await session.execute(select(TaskModel))
