@@ -1,6 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from .models import TaskModel
+from ..user.models import AssigneeModel, UserModel
+from ..tag.models import TagModel, TaskTag
 from .schemas import CreateTask, UpdateTask
 from .mapper import task_to_response
 
@@ -53,3 +55,29 @@ async def get_task_by_id(session: AsyncSession, task_id: str):
         return None
 
     return task_to_response(db_task)
+
+async def task_assignees(session: AsyncSession, task_id: str):
+    task = await session.get(TaskModel, task_id)
+
+    if not task:
+        return None
+
+    result = await session.execute(
+        select(UserModel)
+        .join(AssigneeModel, AssigneeModel.user_id == UserModel.id)
+        .where(AssigneeModel.task_id == task_id)
+    )
+    return result.scalars().all()
+
+async def task_tags(session: AsyncSession, task_id: str):
+    task = await session.get(TaskModel, task_id)
+
+    if not task:
+        return None
+
+    result = await session.execute(
+        select(TagModel)
+        .join(TaskTag, TaskTag.tag_id == TagModel.id)
+        .where(TaskTag.task_id == task_id)
+    )
+    return result.scalars().all()

@@ -2,10 +2,34 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.database import get_db
+from ..tag.schemas import TagResponse
+from ..user.schemas import UserShortResponse
 from . import schemas
 from . import service
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
+
+@router.get("/{task_id}/assignees", response_model=list[UserShortResponse])
+async def get_task_assignees( task_id: str, session: AsyncSession = Depends(get_db),
+):
+    assignees = await service.task_assignees(session=session, task_id=task_id)
+
+    if assignees is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    return assignees
+
+@router.get("/{task_id}/tags", response_model=list[TagResponse])
+async def get_task_tags(
+    task_id: str,
+    session: AsyncSession = Depends(get_db),
+):
+    tags = await service.task_tags(session=session, task_id=task_id)
+
+    if tags is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    return tags
 
 @router.get("", response_model=list[schemas.TaskResponse])
 async def get_tasks(session: AsyncSession = Depends(get_db)):
