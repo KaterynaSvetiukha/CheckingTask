@@ -6,5 +6,6 @@ export function mapTagResponse(dto: TagResponseDTO): Tag {
     id: dto.id,
     name: dto.name,
     color: dto.color,
+    tasks: dto.tasks ?? [],
   }
 }

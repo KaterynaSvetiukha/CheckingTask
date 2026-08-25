@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from uuid import UUID
 
 from src.core.database import get_db
 from . import schemas
@@ -22,7 +23,7 @@ async def login(data: schemas.Login, session: AsyncSession = Depends(get_db)):
     return user
 
 @router.get("/{user_id}", response_model=schemas.UserResponse)
-async def get_user(user_id: str, session: AsyncSession = Depends(get_db)):
+async def get_user(user_id: UUID, session: AsyncSession = Depends(get_db)):
     user = await service.get_user_by_id(session=session, user_id=user_id)
 
     if not user:
@@ -30,7 +31,7 @@ async def get_user(user_id: str, session: AsyncSession = Depends(get_db)):
     return user
 
 @router.get("/{user_id}/assigned-tasks", response_model=TaskShortResponse)
-async def get_assigned_tasks(user_id: str, session: AsyncSession = Depends(get_db)):
+async def get_assigned_tasks(user_id: UUID, session: AsyncSession = Depends(get_db)):
     assigned_tasks = await service.user_tasks(session=session, user_id=user_id)
 
     if assigned_tasks is None:
@@ -39,7 +40,7 @@ async def get_assigned_tasks(user_id: str, session: AsyncSession = Depends(get_d
     return assigned_tasks
 
 @router.get("/{user_id}/dashboards", response_model=DashboardShortResponse)
-async def get_user_dashboards(user_id: str, session: AsyncSession = Depends(get_db)):
+async def get_user_dashboards(user_id: UUID, session: AsyncSession = Depends(get_db)):
     user_dashboards = await service.user_dashboards(session=session, user_id=user_id)
 
     if user_dashboards is None:
@@ -57,7 +58,7 @@ async def post_user(data: schemas.Register, session: AsyncSession = Depends(get_
     return user
 
 @router.delete("/{user_id}")
-async def delete_user(user_id: str, session: AsyncSession = Depends(get_db)):
+async def delete_user(user_id: UUID, session: AsyncSession = Depends(get_db)):
     success = await service.delete(session=session, user_id=user_id)
 
     if not success:

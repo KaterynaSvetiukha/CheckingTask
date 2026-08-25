@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from pwdlib import PasswordHash
+from uuid import UUID
 
 from .mapper import user_to_response
 from .models import UserModel, AssigneeModel, ViewerModel
@@ -11,7 +12,7 @@ from ..dashboard.models import DashboardModel
 
 password_hash = PasswordHash.recommended()
 
-async def get_user_by_id(session: AsyncSession, user_id: str):
+async def get_user_by_id(session: AsyncSession, user_id: UUID):
     user = await session.get(UserModel, user_id)
 
     if not user:
@@ -61,7 +62,7 @@ async def login_user(session: AsyncSession, user: Login) -> UserModel | None:
 
     return stored_user
 
-async def delete(session: AsyncSession, user_id: str):
+async def delete(session: AsyncSession, user_id: UUID):
     user = await session.get(UserModel, user_id)
 
     if not user:
@@ -71,7 +72,7 @@ async def delete(session: AsyncSession, user_id: str):
     await session.commit()
     return True
 
-async def user_tasks(session: AsyncSession, user_id: str):
+async def user_tasks(session: AsyncSession, user_id: UUID):
     user = await session.get(UserModel, user_id)
 
     if not user:
@@ -84,7 +85,7 @@ async def user_tasks(session: AsyncSession, user_id: str):
     )
     return result.scalars().all()
 
-async def user_dashboards(session: AsyncSession, user_id: str):
+async def user_dashboards(session: AsyncSession, user_id: UUID):
     user = await session.get(UserModel, user_id)
     
     if not user:

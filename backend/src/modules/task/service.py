@@ -5,6 +5,7 @@ from ..user.models import AssigneeModel, UserModel
 from ..tag.models import TagModel, TaskTag
 from .schemas import CreateTask, UpdateTask
 from .mapper import task_to_response
+from uuid import UUID
 
 async def get_all_task(session: AsyncSession):
     result = await session.execute(select(TaskModel))
@@ -20,7 +21,7 @@ async def create_task(session: AsyncSession, task: CreateTask) -> TaskModel:
 
     return new_task
 
-async def update_task(session: AsyncSession, task: UpdateTask, task_id: str) -> TaskModel:
+async def update_task(session: AsyncSession, task: UpdateTask, task_id: UUID) -> TaskModel:
     db_task = await session.get(TaskModel, task_id)
 
     if not db_task:
@@ -38,7 +39,7 @@ async def update_task(session: AsyncSession, task: UpdateTask, task_id: str) -> 
 
     return db_task
 
-async def delete_task(session: AsyncSession, task_id: str):
+async def delete_task(session: AsyncSession, task_id: UUID):
     db_task = await session.get(TaskModel, task_id)
 
     if not db_task:
@@ -48,7 +49,7 @@ async def delete_task(session: AsyncSession, task_id: str):
     await session.commit()
     return True
 
-async def get_task_by_id(session: AsyncSession, task_id: str):
+async def get_task_by_id(session: AsyncSession, task_id: UUID):
     db_task = await session.get(TaskModel, task_id)
 
     if not db_task:
@@ -56,7 +57,7 @@ async def get_task_by_id(session: AsyncSession, task_id: str):
 
     return task_to_response(db_task)
 
-async def task_assignees(session: AsyncSession, task_id: str):
+async def task_assignees(session: AsyncSession, task_id: UUID):
     task = await session.get(TaskModel, task_id)
 
     if not task:
@@ -69,7 +70,7 @@ async def task_assignees(session: AsyncSession, task_id: str):
     )
     return result.scalars().all()
 
-async def task_tags(session: AsyncSession, task_id: str):
+async def task_tags(session: AsyncSession, task_id: UUID):
     task = await session.get(TaskModel, task_id)
 
     if not task:
