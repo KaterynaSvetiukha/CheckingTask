@@ -4,6 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.core.database import get_db
 from . import schemas
 from . import service
+from ..dashboard.schemas import DashboardShortResponse
+from ..task.schemas import TaskShortResponse
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -26,6 +28,24 @@ async def get_user(user_id: str, session: AsyncSession = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
+
+@router.get("/{user_id}/assigned-tasks", response_model=TaskShortResponse)
+async def get_assigned_tasks(user_id: str, session: AsyncSession = Depends(get_db)):
+    assigned_tasks = await service.user_tasks(session=session, user_id=user_id)
+
+    if assigned_tasks is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return assigned_tasks
+
+@router.get("/{user_id}/dashboards", response_model=DashboardShortResponse)
+async def get_user_dashboards(user_id: str, session: AsyncSession = Depends(get_db)):
+    user_dashboards = await service.user_dashboards(session=session, user_id=user_id)
+
+    if user_dashboards is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return user_dashboards
 
 @router.post("", response_model=schemas.UserResponse)
 async def post_user(data: schemas.Register, session: AsyncSession = Depends(get_db)):

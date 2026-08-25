@@ -22,3 +22,12 @@ class UpdateDashboard(BaseModel):
     name: Optional[str] = None
     members: Optional[list[UUID]] = None
     columns: Optional[list[UUID]] = None
+
+class DashboardShortResponse(BaseModel):
+    id: UUID
+    name: str
+    author_id: UUID
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    model_config = ConfigDict(from_attributes=True)

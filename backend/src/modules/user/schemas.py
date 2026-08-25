@@ -17,3 +17,10 @@ class UserResponse(BaseModel):
     dashboards: list[UUID] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
+
+class UserShortResponse(BaseModel):
+    id: UUID
+    username: str
+    email: str
+
+    model_config = ConfigDict(from_attributes=True)

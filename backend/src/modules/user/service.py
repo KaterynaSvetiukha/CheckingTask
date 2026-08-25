@@ -4,8 +4,10 @@ from sqlalchemy.exc import IntegrityError
 from pwdlib import PasswordHash
 
 from .mapper import user_to_response
-from .models import UserModel
+from .models import UserModel, AssigneeModel, ViewerModel
 from .schemas import Register, Login
+from ..task.models import TaskModel
+from ..dashboard.models import DashboardModel
 
 password_hash = PasswordHash.recommended()
 
@@ -68,3 +70,29 @@ async def delete(session: AsyncSession, user_id: str):
     await session.delete(user)
     await session.commit()
     return True
+
+async def user_tasks(session: AsyncSession, user_id: str):
+    user = await session.get(UserModel, user_id)
+
+    if not user:
+        return None
+
+    result = await session.execute(
+        select(TaskModel)
+        .join(AssigneeModel, AssigneeModel.task_id == TaskModel.id)
+        .where(AssigneeModel.user_id == user_id)
+    )
+    return result.scalars().all()
+
+async def user_dashboards(session: AsyncSession, user_id: str):
+    user = await session.get(UserModel, user_id)
+    
+    if not user:
+        return None
+
+    result = await session.execute(
+        select(DashboardModel)
+        .join(ViewerModel, ViewerModel.dashboard_id == DashboardModel.id)
+        .where(ViewerModel.user_id == user_id)
+    )
+    return result.scalars().all()

@@ -46,3 +46,17 @@ class UpdateTask(BaseModel):
     column_id: Optional[UUID] = None
     author_id: Optional[UUID] = None
     position: Optional[str] = None
+
+class TaskShortResponse(BaseModel):
+    id: UUID
+    title: str
+    description: Optional[str] = None
+    priority: PriorityEnum
+    time_to: Optional[datetime] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    author_id: UUID
+    column_id: UUID
+    position: str
+
+    model_config = ConfigDict(from_attributes=True)
