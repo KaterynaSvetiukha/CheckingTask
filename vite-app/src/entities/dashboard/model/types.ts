@@ -4,16 +4,16 @@ import type { User } from "@/entities/user/model/types"
 export interface Dashboard {
   id: string
   name: string
-  columns?: Column["id"][]
+  columns: Column["id"][]
   author: User['id']
-  members?: User["id"][]
+  members: User["id"][]
   createdAt: Date
-  updatedAt?: Date
+  updatedAt: Date | null
 }
 
 export interface CreateDashboardInput {
   name: string
-  members?: User["id"][]
+  members: User["id"][]
 }
 
 export type UpdateDashboardInput = Partial<{

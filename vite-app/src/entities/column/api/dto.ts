@@ -3,7 +3,7 @@ export type Status =
 
 export interface ColumnResponseDTO {
   id: string
-  tasks?: string[]
+  tasks: string[]
   status: Status
 }
 
@@ -13,5 +13,5 @@ export interface CreateColumnDTO {
 
 export interface UpdateColumnDTO {
   status: Status
-  tasks?: string[]
+  tasks: string[]
 }

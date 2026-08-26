@@ -4,6 +4,7 @@ import enum
 from sqlalchemy.sql import func
 from sqlalchemy.dialects.postgresql import UUID
 import uuid_utils as uuid
+from sqlalchemy.orm import relationship
 
 class PriorityEnum(str, enum.Enum):
     low = "low"
@@ -18,30 +19,36 @@ class TaskModel(Base):
     description = Column(String(256), nullable=True)
     priority = Column(Enum(PriorityEnum, name="priority_enum"), nullable=False, default=PriorityEnum.medium)
     time_to = Column(DateTime(timezone=True), nullable=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=True)
-    position = Column(String(100), nullable=False, unique=True)
+    position = Column(String(100), nullable=False)
 
-    column_id = Column(UUID(as_uuid=True), ForeignKey("columns.id", ondelete="CASCADE"))
-    author_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    column_id = Column(UUID(as_uuid=True), ForeignKey("columns.id", ondelete="CASCADE"), nullable=False)
+    author_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
 
     __table_args__ = (
-        Index('idx_column_position", "column_id", "position')
+        Index("idx_column_position", "column_id", "position"),
     )
 
-class Tag(Base):
-    __tablename__ = 'tags'
+    column = relationship(
+        "ColumnModel",
+        back_populates="tasks",
+    )
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid7)
-    name = Column(String(100), nullable=False)
-    color = Column(String(100), nullable=False)
+    author = relationship(
+        "UserModel",
+        foreign_keys=[author_id],
+        back_populates="authored_tasks",
+    )
 
-class TaskTag(Base):
-    __tablename__ = 'tasks_tags'
+    assignees = relationship(
+        "UserModel",
+        secondary="assignees",
+        back_populates="assigned_tasks",
+    )
 
-    tag_id = Column(UUID(as_uuid=True), ForeignKey("tags.id", ondelete="CASCADE"), primary_key=True)
-    task_id = Column(UUID(as_uuid=True), ForeignKey("tasks.id", ondelete="CASCADE"), primary_key=True)
-
-    __table_args__ = (
-        Index('idx_task_tag_task_id', 'task_id')
+    tags = relationship(
+        "TagModel",
+        secondary="tasks_tags",
+        back_populates="tasks",
     )

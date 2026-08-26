@@ -6,13 +6,13 @@ export type Priority = "low" | "medium" | "high"
 export interface Task {
   id: string
   title: string
-  description?: string
-  tag?: Tag["id"][]
+  description: string | null
+  tags: Tag["id"][]
   priority: Priority
-  timeTo: string
+  timeTo: string | null
   createdAt: Date
-  updatedAt?: Date
-  assignees?: User["id"][]
+  updatedAt: Date | null
+  assignees: User["id"][]
   author: User["id"]
   columnId: string
   position: string
@@ -20,11 +20,11 @@ export interface Task {
 
 export interface CreateTaskInput {
   title: string
-  description?: string
-  tag?: Tag["id"][]
+  description: string | null
+  tags: Tag["id"][]
   priority: Priority
-  timeTo: string
-  assignees?: User["id"][]
+  timeTo: string | null
+  assignees: User["id"][]
   columnId: string
 }
 
