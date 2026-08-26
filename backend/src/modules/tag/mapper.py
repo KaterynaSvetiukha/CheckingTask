@@ -6,5 +6,5 @@ def tag_to_response(tag: TagModel) -> TagResponse:
         id=tag.id,
         name=tag.name,
         color=tag.color,
-        tasks=[tag.id for tag in tag.task],
+        tasks=[task.id for task in tag.tasks],
     )

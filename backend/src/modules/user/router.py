@@ -20,7 +20,7 @@ async def login(data: schemas.Login, session: AsyncSession = Depends(get_db)):
             detail="Incorrect email or password",
         )
 
-    return user
+    return await service.get_user_by_id(session=session, user_id=user.id)
 
 @router.get("/{user_id}", response_model=schemas.UserResponse)
 async def get_user(user_id: UUID, session: AsyncSession = Depends(get_db)):
@@ -30,7 +30,7 @@ async def get_user(user_id: UUID, session: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-@router.get("/{user_id}/assigned-tasks", response_model=TaskShortResponse)
+@router.get("/{user_id}/assigned-tasks", response_model=list[TaskShortResponse])
 async def get_assigned_tasks(user_id: UUID, session: AsyncSession = Depends(get_db)):
     assigned_tasks = await service.user_tasks(session=session, user_id=user_id)
 
@@ -39,7 +39,7 @@ async def get_assigned_tasks(user_id: UUID, session: AsyncSession = Depends(get_
 
     return assigned_tasks
 
-@router.get("/{user_id}/dashboards", response_model=DashboardShortResponse)
+@router.get("/{user_id}/dashboards", response_model=list[DashboardShortResponse])
 async def get_user_dashboards(user_id: UUID, session: AsyncSession = Depends(get_db)):
     user_dashboards = await service.user_dashboards(session=session, user_id=user_id)
 

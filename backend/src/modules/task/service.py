@@ -13,13 +13,26 @@ async def get_all_task(session: AsyncSession):
     return [task_to_response(task) for task in tasks]
 
 async def create_task(session: AsyncSession, task: CreateTask) -> TaskModel:
-    new_task = TaskModel(**task.model_dump())
+    new_task = TaskModel(**task.model_dump(exclude={'tags', 'assignees'}))
+
+    if task.tags:
+        tags = (await session.execute(select(TagModel).where(TagModel.id.in_(task.tags)))).scalars().all()
+        new_task.tags = tags
+    else:
+        new_task.tags = []
+
+    if task.assignees:
+        assignees = (await session.execute(select(UserModel).where(UserModel.id.in_(task.assignees)))).scalars().all()
+        new_task.assignees = assignees
+    else:
+        new_task.assignees = []
+    
 
     session.add(new_task)
     await session.commit()
     await session.refresh(new_task)
 
-    return new_task
+    return task_to_response(new_task)
 
 async def update_task(session: AsyncSession, task: UpdateTask, task_id: UUID) -> TaskModel:
     db_task = await session.get(TaskModel, task_id)
