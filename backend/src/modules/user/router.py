@@ -48,6 +48,78 @@ async def get_user_dashboards(user_id: UUID, session: AsyncSession = Depends(get
 
     return user_dashboards
 
+@router.post("/{user_id}/tasks/{task_id}")
+async def add_user_to_task(
+    user_id: UUID,
+    task_id: UUID,
+    session: AsyncSession = Depends(get_db),
+):
+    result = await service.add_user_to_task(
+        session=session,
+        user_id=user_id,
+        task_id=task_id,
+    )
+
+    if result is None:
+        raise HTTPException(status_code=404, detail="User or task not found")
+    if result is False:
+        raise HTTPException(status_code=409, detail="User is already assigned")
+
+    return {"detail": "User assigned to task"}
+
+@router.delete("/{user_id}/tasks/{task_id}")
+async def remove_user_from_task(
+    user_id: UUID,
+    task_id: UUID,
+    session: AsyncSession = Depends(get_db),
+):
+    result = await service.remove_user_from_task(
+        session=session,
+        user_id=user_id,
+        task_id=task_id,
+    )
+
+    if result is None:
+        raise HTTPException(status_code=404, detail="Assignment not found")
+
+    return {"detail": "User removed from task"}
+
+@router.post("/{user_id}/dashboards/{dashboard_id}")
+async def add_user_to_dashboard(
+    user_id: UUID,
+    dashboard_id: UUID,
+    session: AsyncSession = Depends(get_db),
+):
+    result = await service.add_user_to_dashboard(
+        session=session,
+        user_id=user_id,
+        dashboard_id=dashboard_id,
+    )
+
+    if result is None:
+        raise HTTPException(status_code=404, detail="User or dashboard not found")
+    if result is False:
+        raise HTTPException(status_code=409, detail="User is already a dashboard member")
+
+    return {"detail": "User added to dashboard"}
+
+@router.delete("/{user_id}/dashboards/{dashboard_id}")
+async def remove_user_from_dashboard(
+    user_id: UUID,
+    dashboard_id: UUID,
+    session: AsyncSession = Depends(get_db),
+):
+    result = await service.remove_user_from_dashboard(
+        session=session,
+        user_id=user_id,
+        dashboard_id=dashboard_id,
+    )
+
+    if result is None:
+        raise HTTPException(status_code=404, detail="Dashboard membership not found")
+
+    return {"detail": "User removed from dashboard"}
+
 @router.post("", response_model=schemas.UserResponse)
 async def post_user(data: schemas.Register, session: AsyncSession = Depends(get_db)):
     user = await service.create(session=session, user=data)

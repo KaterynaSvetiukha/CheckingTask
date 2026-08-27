@@ -97,3 +97,98 @@ async def user_dashboards(session: AsyncSession, user_id: UUID):
         .where(ViewerModel.user_id == user_id)
     )
     return result.scalars().all()
+
+async def add_user_to_task(
+    session: AsyncSession,
+    user_id: UUID,
+    task_id: UUID,
+) -> bool | None:
+    user = await session.get(UserModel, user_id)
+    task = await session.get(TaskModel, task_id)
+
+    if user is None or task is None:
+        return None
+
+    existing_assignee = await session.execute(
+        select(AssigneeModel).where(
+            AssigneeModel.user_id == user_id,
+            AssigneeModel.task_id == task_id,
+        )
+    )
+
+    if existing_assignee.scalar_one_or_none() is not None:
+        return False
+
+    assignee = AssigneeModel(user_id=user_id, task_id=task_id)
+
+    session.add(assignee)
+    await session.commit()
+    return True
+
+
+async def remove_user_from_task(
+    session: AsyncSession,
+    user_id: UUID,
+    task_id: UUID,
+) -> bool | None:
+    result = await session.execute(
+        select(AssigneeModel).where(
+            AssigneeModel.user_id == user_id,
+            AssigneeModel.task_id == task_id,
+        )
+    )
+    assignee = result.scalar_one_or_none()
+
+    if assignee is None:
+        return None
+
+    await session.delete(assignee)
+    await session.commit()
+    return True
+
+async def add_user_to_dashboard(
+    session: AsyncSession,
+    user_id: UUID,
+    dashboard_id: UUID,
+) -> bool | None:
+    user = await session.get(UserModel, user_id)
+    dashboard = await session.get(DashboardModel, dashboard_id)
+
+    if user is None or dashboard is None:
+        return None
+
+    existing_viewer = await session.execute(
+        select(ViewerModel).where(
+            ViewerModel.user_id == user_id,
+            ViewerModel.dashboard_id == dashboard_id,
+        )
+    )
+
+    if existing_viewer.scalar_one_or_none() is not None:
+        return False
+
+    viewer = ViewerModel(user_id=user_id, dashboard_id=dashboard_id)
+
+    session.add(viewer)
+    await session.commit()
+    return True
+
+async def remove_user_from_dashboard(
+    session: AsyncSession,
+    user_id: UUID,
+    dashboard_id: UUID,
+) -> bool | None:
+    result = await session.execute(
+        select(ViewerModel).where(
+            ViewerModel.user_id == user_id,
+            ViewerModel.dashboard_id == dashboard_id,
+        )
+    )
+    viewer = result.scalar_one_or_none()
+
+    if viewer is None:
+        return None
+
+    await session.delete(viewer)
+    await session.commit()
+    return True
