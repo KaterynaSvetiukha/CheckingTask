@@ -6,6 +6,7 @@ from ..tag.models import TagModel, TaskTag
 from .schemas import CreateTask, UpdateTask
 from .mapper import task_to_response
 from uuid import UUID
+from ..column.models import ColumnModel
 
 async def get_all_task(session: AsyncSession):
     result = await session.execute(select(TaskModel))
@@ -95,3 +96,22 @@ async def task_tags(session: AsyncSession, task_id: UUID):
         .where(TaskTag.task_id == task_id)
     )
     return result.scalars().all()
+
+async def move_task(session: AsyncSession, task_id: UUID, column_id: UUID, position: str) -> TaskModel | None: 
+    task = await session.get(TaskModel, task_id)
+
+    if task is None:
+        return None
+
+    column = await session.get(ColumnModel, column_id)
+
+    if column is None:
+        return None
+
+    task.column_id = column_id
+    task.position = position
+
+    await session.commit()
+    await session.refresh(task)
+
+    return task

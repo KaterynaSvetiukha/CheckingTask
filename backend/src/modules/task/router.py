@@ -56,6 +56,14 @@ async def update_tasks(task_id: UUID, data: schemas.UpdateTask, session: AsyncSe
         raise HTTPException(status_code=404, detail="Task not found")
     return updated_task
 
+@router.patch("/{task_id}/move", response_model=schemas.TaskResponse)
+async def update_tasks(task_id: UUID, data: schemas.MoveTask, session: AsyncSession = Depends(get_db)):
+    move_task = await service.move_task(session=session, task_id=task_id, column_id=data.column_id, position=data.position)
+
+    if not move_task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return move_task
+
 @router.delete("/{task_id}")
 async def delete_tasks(task_id: UUID, session: AsyncSession = Depends(get_db)):
     success = await service.delete_task(session=session, task_id=task_id)

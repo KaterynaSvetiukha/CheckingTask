@@ -60,3 +60,7 @@ class TaskShortResponse(BaseModel):
     position: str
 
     model_config = ConfigDict(from_attributes=True)
+
+class MoveTask(BaseModel):
+    column_id: UUID
+    position: str
