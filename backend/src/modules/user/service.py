@@ -6,7 +6,7 @@ from uuid import UUID
 
 from .mapper import user_to_response
 from .models import UserModel, AssigneeModel, ViewerModel
-from .schemas import Register, Login
+from .schemas import Register, Login, UserResponse
 from ..task.models import TaskModel
 from ..dashboard.models import DashboardModel
 
@@ -199,3 +199,17 @@ async def remove_user_from_dashboard(
     await session.delete(viewer)
     await session.commit()
     return True
+
+async def search_users(session: AsyncSession, query: str, limit: int = 20) -> list[UserResponse]:
+    if not query.strip():
+        return []
+
+    search_pattern = f"%{query.strip()}%"
+
+    result = await session.execute(
+        select(UserModel).where(
+            UserModel.username.ilike(search_pattern) | UserModel.email.ilike(search_pattern)).limit(limit))
+
+    users = result.scalars().all()
+
+    return [user_to_response(user) for user in users]

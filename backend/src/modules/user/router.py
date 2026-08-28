@@ -10,6 +10,10 @@ from ..task.schemas import TaskShortResponse
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
+@router.get("/search", response_model=list[schemas.UserResponse])
+async def search(query: str, session: AsyncSession = Depends(get_db)):
+    return await service.search_users(session=session, query=query)
+
 @router.post("/login", response_model=schemas.UserResponse)
 async def login(data: schemas.Login, session: AsyncSession = Depends(get_db)):
     user = await service.login_user(session=session, user=data)
