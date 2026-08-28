@@ -5,6 +5,16 @@ from .models import DashboardModel
 from .mapper import dashboard_to_response
 from ..user.models import UserModel
 from .schemas import CreateDashboard, UpdateDashboard, DashboardResponse
+from ..column.models import ColumnModel, StatusEnum
+
+DEFAULT_COLUMNS = [
+    StatusEnum.backlog,
+    StatusEnum.ready,
+    StatusEnum.in_progress,
+    StatusEnum.in_viewer,
+    StatusEnum.done,
+    StatusEnum.overdue,
+]
 
 async def get_dashboard_by_id(session: AsyncSession, dashboard_id: UUID):
     db_dashboard = await session.get(DashboardModel, dashboard_id)
@@ -25,6 +35,11 @@ async def create_dashboard(session: AsyncSession, data: CreateDashboard, author_
     new_dashboard.members = list(result.scalars().all())
 
     session.add(new_dashboard)
+    await session.flush()
+
+    for status in DEFAULT_COLUMNS:
+        session.add(ColumnModel(dashboard_id=new_dashboard, status=status))
+
     await session.commit()
     await session.refresh(new_dashboard)
 
