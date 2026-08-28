@@ -14,6 +14,14 @@ async def get_tasks_for_column(session: AsyncSession, column_id: UUID):
 
     return tasks.scalars().all()
 
+
+async def get_columns_by_dashboard_id(session: AsyncSession, dashboard_id: UUID):
+    columns = await session.execute(
+        select(ColumnModel).where(ColumnModel.dashboard_id == dashboard_id)
+    )
+
+    return columns.scalars().all()
+
 async def get_all_columns(session: AsyncSession):
     result = await session.execute(select(ColumnModel))
     columns = result.scalars().all()

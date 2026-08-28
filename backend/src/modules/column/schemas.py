@@ -25,3 +25,10 @@ class CreateColumn(BaseModel):
 
 class UpdateColumn(BaseModel):
     status: Optional[StatusEnum] = None
+
+class ColumnShortResponse(BaseModel):
+    id: UUID
+    dashboard_id: UUID
+    status: StatusEnum
+
+    model_config = ConfigDict(from_attributes=True)
