@@ -18,6 +18,4 @@ export interface CreateDashboardInput {
 
 export type UpdateDashboardInput = Partial<{
   name: string
-  columns: Column["id"][]
-  members: User['id'][]
 }>

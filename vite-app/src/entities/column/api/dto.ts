@@ -4,6 +4,7 @@ export type Status =
 export interface ColumnResponseDTO {
   id: string
   tasks: string[]
+  dashboard_id: string
   status: Status
 }
 
@@ -13,5 +14,4 @@ export interface CreateColumnDTO {
 
 export interface UpdateColumnDTO {
   status: Status
-  tasks: string[]
 }

@@ -27,9 +27,5 @@ export function mapUpdateDashboardInput(
 ): UpdateDashboardDTO {
   return {
     ...(input.name !== undefined && { name: input.name }),
-    ...(input.columns !== undefined && {
-      columns: input.columns,
-    }),
-    ...(input.members !== undefined && { members: input.members }),
   }
 }

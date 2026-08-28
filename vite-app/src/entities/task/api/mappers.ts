@@ -27,6 +27,8 @@ export function mapCreateTaskInput(input: CreateTaskInput): CreateTaskDTO {
     time_to: input.timeTo ?? null,
     assignees: input.assignees ?? [],
     column_id: input.columnId,
+    author_id: input.authorId,
+    position: input.position,
   }
 }
 
@@ -36,18 +38,14 @@ export function mapUpdateTaskInput(input: UpdateTaskInput): UpdateTaskDTO {
     ...(input.description !== undefined && {
       description: input.description,
     }),
-    ...(input.tags !== undefined && { tags: input.tags }),
     ...(input.priority !== undefined && {
       priority: input.priority,
     }),
     ...(input.timeTo !== undefined && {
       time_to: input.timeTo,
     }),
-    ...(input.assignees !== undefined && {
-        assignees: input.assignees,
-      }),
-    ...(input.columnId !== undefined && {
-      column_id: input.columnId,
+    ...(input.position !== undefined && {
+      position: input.position,
     }),
   }
 }

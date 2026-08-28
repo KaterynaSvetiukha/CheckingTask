@@ -15,6 +15,4 @@ export interface CreateDashboardDTO {
 
 export type UpdateDashboardDTO = Partial<{
   name: string
-  columns: string[]
-  members: string[]
 }>
