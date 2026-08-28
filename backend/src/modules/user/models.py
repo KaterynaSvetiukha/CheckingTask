@@ -20,24 +20,28 @@ class UserModel(Base):
         "DashboardModel",
         secondary="viewers",
         back_populates="members",
+        lazy="selectin"
     )
 
     assigned_tasks = relationship(
         "TaskModel",
         secondary="assignees",
         back_populates="assignees",
+        lazy="selectin"
     )
 
     authored_tasks = relationship(
         "TaskModel",
         foreign_keys="TaskModel.author_id",
         back_populates="author",
+        lazy="selectin"
     )
 
     authored_dashboards = relationship(
         "DashboardModel",
         foreign_keys="DashboardModel.author_id",
         back_populates="author",
+        lazy="selectin"
     )
 
 class AssigneeModel(Base):

@@ -20,8 +20,6 @@ class CreateDashboard(BaseModel):
 
 class UpdateDashboard(BaseModel):
     name: Optional[str] = None
-    members: Optional[list[UUID]] = None
-    columns: Optional[list[UUID]] = None
 
 class DashboardShortResponse(BaseModel):
     id: UUID

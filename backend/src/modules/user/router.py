@@ -20,7 +20,7 @@ async def login(data: schemas.Login, session: AsyncSession = Depends(get_db)):
             detail="Incorrect email or password",
         )
 
-    return await service.get_user_by_id(session=session, user_id=user.id)
+    return user
 
 @router.get("/{user_id}", response_model=schemas.UserResponse)
 async def get_user(user_id: UUID, session: AsyncSession = Depends(get_db)):

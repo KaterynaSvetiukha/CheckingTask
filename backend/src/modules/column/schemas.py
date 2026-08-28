@@ -13,14 +13,15 @@ class StatusEnum(str, enum.Enum):
 
 class ColumnResponse(BaseModel):
     id: UUID
+    dashboard_id: UUID
     tasks: list[UUID] = Field(default_factory=list)
     status: StatusEnum
 
     model_config = ConfigDict(from_attributes=True)
 
 class CreateColumn(BaseModel):
-    status: StatusEnum
+    dashboard_id: UUID
+    status: StatusEnum = StatusEnum.backlog
 
 class UpdateColumn(BaseModel):
-    status: StatusEnum
-    tasks: Optional[list[UUID]] = None
+    status: Optional[StatusEnum] = None

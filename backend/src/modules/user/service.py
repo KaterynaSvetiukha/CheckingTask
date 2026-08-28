@@ -49,7 +49,7 @@ async def create(session: AsyncSession, user: Register) -> UserModel | None:
 
     await session.refresh(new_user)
 
-    return new_user
+    return user_to_response(new_user)
 
 async def login_user(session: AsyncSession, user: Login) -> UserModel | None:
     result = await session.execute(
@@ -60,7 +60,7 @@ async def login_user(session: AsyncSession, user: Login) -> UserModel | None:
     if not stored_user or not password_hash.verify(user.password, stored_user.password):
         return None
 
-    return stored_user
+    return user_to_response(stored_user)
 
 async def delete(session: AsyncSession, user_id: UUID):
     user = await session.get(UserModel, user_id)
@@ -95,6 +95,13 @@ async def user_dashboards(session: AsyncSession, user_id: UUID):
         select(DashboardModel)
         .join(ViewerModel, ViewerModel.dashboard_id == DashboardModel.id)
         .where(ViewerModel.user_id == user_id)
+    )
+    return result.scalars().all()
+
+async def get_dashboards_where_user_is_own(session: AsyncSession, user_id: UUID):
+    result = await session.execute(
+        select(DashboardModel)
+        .where(DashboardModel.author_id == user_id)
     )
     return result.scalars().all()
 

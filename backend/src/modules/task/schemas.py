@@ -39,12 +39,8 @@ class CreateTask(BaseModel):
 class UpdateTask(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
-    tags: Optional[list[UUID]] = None
     priority: Optional[PriorityEnum] = None
     time_to: Optional[datetime] = None
-    assignees: Optional[list[UUID]] = None
-    column_id: Optional[UUID] = None
-    author_id: Optional[UUID] = None
     position: Optional[str] = None
 
 class TaskShortResponse(BaseModel):

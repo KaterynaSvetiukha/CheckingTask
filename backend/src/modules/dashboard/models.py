@@ -11,7 +11,7 @@ class DashboardModel(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid7)
     name = Column(String(100), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=True)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=True)
 
     author_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
 
@@ -19,16 +19,19 @@ class DashboardModel(Base):
         "ColumnModel",
         back_populates="dashboard",
         cascade="all, delete-orphan",
+        lazy="selectin"
     )
 
     members = relationship(
         "UserModel",
         secondary="viewers",
         back_populates="dashboards",
+        lazy="selectin"
     )
 
     author = relationship(
         "UserModel",
         foreign_keys=[author_id],
         back_populates="authored_dashboards",
+        lazy="selectin"
     )

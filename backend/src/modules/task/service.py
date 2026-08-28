@@ -3,17 +3,17 @@ from sqlalchemy import select
 from .models import TaskModel
 from ..user.models import AssigneeModel, UserModel
 from ..tag.models import TagModel, TaskTag
-from .schemas import CreateTask, UpdateTask
+from .schemas import CreateTask, UpdateTask, TaskResponse
 from .mapper import task_to_response
 from uuid import UUID
 from ..column.models import ColumnModel
 
-async def get_all_task(session: AsyncSession):
+async def get_all_task(session: AsyncSession) -> list[TaskResponse]:
     result = await session.execute(select(TaskModel))
     tasks = result.scalars().all()
     return [task_to_response(task) for task in tasks]
 
-async def create_task(session: AsyncSession, task: CreateTask) -> TaskModel:
+async def create_task(session: AsyncSession, task: CreateTask) -> TaskResponse:
     new_task = TaskModel(**task.model_dump(exclude={'tags', 'assignees'}))
 
     if task.tags:
@@ -35,7 +35,7 @@ async def create_task(session: AsyncSession, task: CreateTask) -> TaskModel:
 
     return task_to_response(new_task)
 
-async def update_task(session: AsyncSession, task: UpdateTask, task_id: UUID) -> TaskModel:
+async def update_task(session: AsyncSession, task: UpdateTask, task_id: UUID) -> TaskResponse | None:
     db_task = await session.get(TaskModel, task_id)
 
     if not db_task:
@@ -51,9 +51,9 @@ async def update_task(session: AsyncSession, task: UpdateTask, task_id: UUID) ->
     await session.commit()
     await session.refresh(db_task)
 
-    return db_task
+    return task_to_response(db_task)
 
-async def delete_task(session: AsyncSession, task_id: UUID):
+async def delete_task(session: AsyncSession, task_id: UUID) -> bool | None:
     db_task = await session.get(TaskModel, task_id)
 
     if not db_task:
@@ -63,7 +63,7 @@ async def delete_task(session: AsyncSession, task_id: UUID):
     await session.commit()
     return True
 
-async def get_task_by_id(session: AsyncSession, task_id: UUID):
+async def get_task_by_id(session: AsyncSession, task_id: UUID) -> TaskResponse | None:
     db_task = await session.get(TaskModel, task_id)
 
     if not db_task:
@@ -97,7 +97,7 @@ async def task_tags(session: AsyncSession, task_id: UUID):
     )
     return result.scalars().all()
 
-async def move_task(session: AsyncSession, task_id: UUID, column_id: UUID, position: str) -> TaskModel | None: 
+async def move_task(session: AsyncSession, task_id: UUID, column_id: UUID, position: str) -> TaskResponse | None: 
     task = await session.get(TaskModel, task_id)
 
     if task is None:
@@ -114,4 +114,4 @@ async def move_task(session: AsyncSession, task_id: UUID, column_id: UUID, posit
     await session.commit()
     await session.refresh(task)
 
-    return task
+    return task_to_response(task)

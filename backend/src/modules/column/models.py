@@ -25,10 +25,12 @@ class ColumnModel(Base):
     dashboard = relationship(
         "DashboardModel",
         back_populates="columns",
+        lazy="selectin"
     )
 
     tasks = relationship(
         "TaskModel",
         back_populates="column",
         cascade="all, delete-orphan",
+        lazy="selectin"
     )
