@@ -37,7 +37,7 @@ async def delete_tag(tag_id: UUID, session: AsyncSession = Depends(get_db)):
     data = await service.get_tasks_for_tag(session=session, tag_id=tag_id)
 
     if data is None:
-        raise HTTPException('404', 'Tag not found')
+        raise HTTPException(status_code='404', detail='Tag not found')
 
     return data
 
@@ -52,7 +52,7 @@ async def delete_tag(tag_id: UUID, session: AsyncSession = Depends(get_db)):
     success = await service.delete_tag(session=session, tag_id=tag_id)
 
     if not success:
-        raise HTTPException('404', 'Tag not found')
+        raise HTTPException(status_code='404', detail='Tag not found')
 
     return {"detail": "Tag deleted"}
 
