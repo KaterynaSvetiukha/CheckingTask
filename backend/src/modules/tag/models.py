@@ -15,6 +15,7 @@ class TagModel(Base):
         "TaskModel",
         secondary="tasks_tags",
         back_populates="tags",
+        lazy="selectin"
     )
 
 class TaskTag(Base):

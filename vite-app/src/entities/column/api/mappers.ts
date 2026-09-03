@@ -5,6 +5,7 @@ export function mapColumnResponse(dto: ColumnResponseDTO): Column {
   return {
     id: dto.id,
     status: dto.status,
+    dashboardId: dto.dashboard_id,
     tasks: dto.tasks ?? [],
   }
 }

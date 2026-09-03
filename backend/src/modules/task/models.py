@@ -20,7 +20,7 @@ class TaskModel(Base):
     priority = Column(Enum(PriorityEnum, name="priority_enum"), nullable=False, default=PriorityEnum.medium)
     time_to = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=True)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=True)
     position = Column(String(100), nullable=False)
 
     column_id = Column(UUID(as_uuid=True), ForeignKey("columns.id", ondelete="CASCADE"), nullable=False)
@@ -33,22 +33,26 @@ class TaskModel(Base):
     column = relationship(
         "ColumnModel",
         back_populates="tasks",
+        lazy="selectin"
     )
 
     author = relationship(
         "UserModel",
         foreign_keys=[author_id],
         back_populates="authored_tasks",
+        lazy="selectin"
     )
 
     assignees = relationship(
         "UserModel",
         secondary="assignees",
         back_populates="assigned_tasks",
+        lazy="selectin"
     )
 
     tags = relationship(
         "TagModel",
         secondary="tasks_tags",
         back_populates="tasks",
+        lazy="selectin"
     )

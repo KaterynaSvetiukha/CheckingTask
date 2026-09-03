@@ -24,7 +24,7 @@ async def create_tag(session: AsyncSession, tag: CreateTag) -> TagModel:
     await session.commit()
     await session.refresh(new_tag)
 
-    return new_tag
+    return tag_to_response(new_tag)
 
 async def delete_tag(session: AsyncSession, tag_id: UUID) -> bool | None:
     db_tag = await session.get(TagModel, tag_id)
@@ -38,6 +38,11 @@ async def delete_tag(session: AsyncSession, tag_id: UUID) -> bool | None:
     return True
 
 async def get_tasks_for_tag(session: AsyncSession, tag_id: UUID):
+    tag = await session.get(TagModel, tag_id)
+
+    if tag is None:
+        return None
+    
     result = await session.execute(
         select(TaskModel)
         .join(TaskTag, TaskTag.task_id == TaskModel.id)
@@ -46,14 +51,30 @@ async def get_tasks_for_tag(session: AsyncSession, tag_id: UUID):
 
     return result.scalars().all()
 
-async def add_tag_to_task(session: AsyncSession, tag_id: UUID, task_id: UUID) -> bool:
+async def add_tag_to_task(session: AsyncSession, tag_id: UUID, task_id: UUID) -> bool | None:
+    tag = await session.get(TagModel, tag_id)
+    task = await session.get(TaskModel, task_id)
+
+    if tag is None or task is None:
+        return None
+
+    existing_task_tag = await session.execute(
+        select(TaskTag).where(
+            TaskTag.tag_id == tag_id,
+            TaskTag.task_id == task_id,
+        )
+    )
+
+    if existing_task_tag.scalar_one_or_none() is not None:
+        return False
+    
     task_tag = TaskTag(task_id=task_id, tag_id=tag_id)
 
     session.add(task_tag)
     await session.commit()
     return True
 
-async def remove_tag_to_task(session: AsyncSession, tag_id: UUID, task_id: UUID) -> bool | None:
+async def remove_tag_from_task(session: AsyncSession, tag_id: UUID, task_id: UUID) -> bool | None:
     task_tag = await session.execute(
         select(TaskTag).where(TaskTag.task_id == task_id,
                               TaskTag.tag_id == tag_id,))

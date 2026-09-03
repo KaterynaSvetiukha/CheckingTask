@@ -5,6 +5,16 @@ export type Status =
 
 export interface Column {
   id: string
-  tasks: Task['id'][]
+  tasks: Task["id"][]
+  dashboardId: string
   status: Status
+}
+
+export interface CreateColumnInput {
+  dashboardId: string
+  status: Status
+}
+
+export interface UpdateColumnInput {
+  status?: Status
 }

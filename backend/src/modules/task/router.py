@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
@@ -16,7 +16,7 @@ async def get_task_assignees( task_id: UUID, session: AsyncSession = Depends(get
     assignees = await service.task_assignees(session=session, task_id=task_id)
 
     if assignees is None:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
 
     return assignees
 
@@ -28,7 +28,7 @@ async def get_task_tags(
     tags = await service.task_tags(session=session, task_id=task_id)
 
     if tags is None:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
 
     return tags
 
@@ -41,7 +41,7 @@ async def get_task(task_id: UUID, session: AsyncSession = Depends(get_db)):
     task = await service.get_task_by_id(session=session, task_id=task_id)
 
     if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
     return task
 
 @router.post("", response_model=schemas.TaskResponse)
@@ -53,14 +53,22 @@ async def update_tasks(task_id: UUID, data: schemas.UpdateTask, session: AsyncSe
     updated_task = await service.update_task(session=session, task=data, task_id=task_id)
 
     if not updated_task:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
     return updated_task
+
+@router.patch("/{task_id}/move", response_model=schemas.TaskResponse)
+async def move_task(task_id: UUID, data: schemas.MoveTask, session: AsyncSession = Depends(get_db)):
+    move_task = await service.move_task(session=session, task_id=task_id, column_id=data.column_id, position=data.position)
+
+    if not move_task:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task or column not found")
+    return move_task
 
 @router.delete("/{task_id}")
 async def delete_tasks(task_id: UUID, session: AsyncSession = Depends(get_db)):
     success = await service.delete_task(session=session, task_id=task_id)
 
     if not success:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
 
     return {"detail": "Task deleted"}

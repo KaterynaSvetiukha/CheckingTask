@@ -23,6 +23,19 @@ export interface CreateTaskDTO {
   time_to: string | null
   assignees: string[]
   column_id: string
+  author_id: string
+  position: string
 }
 
-export type UpdateTaskDTO = Partial<CreateTaskDTO>
+export interface UpdateTaskDTO {
+  title?: string
+  description?: string | null
+  priority?: Priority
+  time_to?: string | null
+  position?: string
+}
+
+export interface MoveTaskDTO {
+  column_id: string
+  position: string
+}
