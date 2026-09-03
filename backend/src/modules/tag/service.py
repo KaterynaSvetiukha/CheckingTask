@@ -51,7 +51,7 @@ async def get_tasks_for_tag(session: AsyncSession, tag_id: UUID):
 
     return result.scalars().all()
 
-async def add_tag_to_task(session: AsyncSession, tag_id: UUID, task_id: UUID) -> bool:
+async def add_tag_to_task(session: AsyncSession, tag_id: UUID, task_id: UUID) -> bool | None:
     tag = await session.get(TagModel, tag_id)
     task = await session.get(TaskModel, task_id)
 

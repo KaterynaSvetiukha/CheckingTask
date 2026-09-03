@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
@@ -13,7 +13,7 @@ async def get_dashboard(dashboard_id: UUID, session: AsyncSession = Depends(get_
     dashboard = await service.get_dashboard_by_id(session=session, dashboard_id=dashboard_id)
 
     if dashboard is None:
-        raise HTTPException(status_code='404', detail='Dashboard not found')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Dashboard not found')
 
     return dashboard
 
@@ -26,7 +26,7 @@ async def put_dashboard(dashboard_id: UUID, data: schemas.UpdateDashboard, sessi
     dashboard = await service.update_dashboard(session=session, dashboard_id=dashboard_id, data=data)
 
     if dashboard is None:
-        raise HTTPException(status_code='404', detail='Dashboard not found')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Dashboard not found')
 
     return dashboard
 
@@ -35,6 +35,6 @@ async def delete_dashboard(dashboard_id: UUID, session: AsyncSession = Depends(g
     success = await service.delete(session=session, dashboard_id=dashboard_id)
 
     if success is None:
-        raise HTTPException(status_code='404', detail='Dashboard not found')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Dashboard not found')
 
     return {'detail': 'Dashboard deleted'}

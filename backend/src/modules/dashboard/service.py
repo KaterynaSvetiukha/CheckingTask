@@ -38,7 +38,7 @@ async def create_dashboard(session: AsyncSession, data: CreateDashboard, author_
     await session.flush()
 
     for status in DEFAULT_COLUMNS:
-        session.add(ColumnModel(dashboard_id=new_dashboard, status=status))
+        session.add(ColumnModel(dashboard_id=new_dashboard.id, status=status))
 
     await session.commit()
     await session.refresh(new_dashboard)
@@ -61,7 +61,7 @@ async def update_dashboard(session: AsyncSession, data: UpdateDashboard, dashboa
 
     return dashboard_to_response(dashboard)
 
-async def delete(session: AsyncSession, dashboard_id: UUID) -> True | None:
+async def delete(session: AsyncSession, dashboard_id: UUID) -> bool | None:
     dashboard = await session.get(DashboardModel, dashboard_id)
     
     if dashboard is None:

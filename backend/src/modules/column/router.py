@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
@@ -15,7 +15,7 @@ async def get_column_tasks( column_id: UUID, session: AsyncSession = Depends(get
     tasks = await service.get_tasks_for_column(session=session, column_id=column_id)
 
     if tasks is None:
-        raise HTTPException(status_code=404, detail="Tasks not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tasks not found")
 
     return tasks
 
@@ -35,7 +35,7 @@ async def get_column(column_id: UUID, session: AsyncSession = Depends(get_db),
     column = await service.get_column_by_id(session=session, column_id=column_id)
 
     if column is None:
-        raise HTTPException(status_code=404, detail="Column not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Column not found")
 
     return column
 
@@ -48,7 +48,7 @@ async def update_column(column_id: UUID, data: schemas.UpdateColumn, session: As
     column = await service.update_column(session=session, data=data, column_id=column_id)
 
     if column is None:
-        raise HTTPException(status_code=404, detail="Column not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Column not found")
 
     return column
 
@@ -57,6 +57,6 @@ async def delete_column(column_id: UUID, session: AsyncSession = Depends(get_db)
     success = await service.delete(session=session, column_id=column_id)
 
     if success is None:
-        raise HTTPException(status_code=404, detail="Column not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Column not found")
 
     return {'detail': 'Column deleted'}
