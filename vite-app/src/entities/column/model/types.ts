@@ -16,5 +16,5 @@ export interface CreateColumnInput {
 }
 
 export interface UpdateColumnInput {
-  status?: Status
+  status: Status
 }

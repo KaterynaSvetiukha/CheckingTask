@@ -15,3 +15,9 @@ export interface UserResponseDTO {
   email: string
   dashboards: string[]
 }
+
+export interface UserShortResponseDTO {
+  id: string
+  username: string
+  email: string
+}

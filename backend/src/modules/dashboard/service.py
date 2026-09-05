@@ -24,6 +24,13 @@ async def get_dashboard_by_id(session: AsyncSession, dashboard_id: UUID):
 
     return dashboard_to_response(db_dashboard)
 
+async def get_columns_by_dashboard_id(session: AsyncSession, dashboard_id: UUID):
+    columns = await session.execute(
+        select(ColumnModel).where(ColumnModel.dashboard_id == dashboard_id)
+    )
+
+    return columns.scalars().all()
+
 async def create_dashboard(session: AsyncSession, data: CreateDashboard, author_id: UUID) -> DashboardResponse:
     new_dashboard = DashboardModel(**data.model_dump(exclude={'members'}))
     new_dashboard.author_id = author_id

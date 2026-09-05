@@ -15,6 +15,19 @@ export interface TaskResponseDTO {
   position: string
 }
 
+export interface TaskShortResponseDTO {
+  id: string
+  title: string
+  description: string | null
+  priority: Priority
+  time_to: string | null
+  created_at: string
+  updated_at: string | null
+  author_id: string
+  column_id: string
+  position: string
+}
+
 export interface CreateTaskDTO {
   title: string
   description: string | null

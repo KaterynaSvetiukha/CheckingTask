@@ -5,8 +5,13 @@ from uuid import UUID
 from src.core.database import get_db
 from . import schemas
 from . import service
+from ..column.schemas import ColumnShortResponse
 
 router = APIRouter(prefix="/dashboards", tags=["Dashboards"])
+
+@router.post("", response_model=schemas.DashboardResponse)
+async def post_dashboard(data: schemas.CreateDashboard, author_id: UUID, session: AsyncSession = Depends(get_db)):
+    return await service.create_dashboard(session=session, data=data, author_id=author_id)
 
 @router.get("/{dashboard_id}", response_model=schemas.DashboardResponse)
 async def get_dashboard(dashboard_id: UUID, session: AsyncSession = Depends(get_db)):
@@ -17,9 +22,10 @@ async def get_dashboard(dashboard_id: UUID, session: AsyncSession = Depends(get_
 
     return dashboard
 
-@router.post("", response_model=schemas.DashboardResponse)
-async def post_dashboard(data: schemas.CreateDashboard, author_id: UUID, session: AsyncSession = Depends(get_db)):
-    return await service.create_dashboard(session=session, data=data, author_id=author_id)
+@router.get("/{dashboard_id}/columns", response_model=list[ColumnShortResponse])
+async def get_column_for_dashboard( dashboard_id: UUID, session: AsyncSession = Depends(get_db),
+):
+    return await service.get_columns_by_dashboard_id(session=session, dashboard_id=dashboard_id)
 
 @router.put("/{dashboard_id}", response_model=schemas.DashboardResponse)
 async def put_dashboard(dashboard_id: UUID, data: schemas.UpdateDashboard, session: AsyncSession = Depends(get_db)):

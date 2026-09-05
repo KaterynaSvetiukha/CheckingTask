@@ -14,6 +14,15 @@ router = APIRouter(prefix="/users", tags=["Users"])
 async def search(query: str, session: AsyncSession = Depends(get_db)):
     return await service.search_users(session=session, query=query)
 
+@router.post("", response_model=schemas.UserResponse)
+async def post_user(data: schemas.Register, session: AsyncSession = Depends(get_db)):
+    user = await service.create(session=session, user=data)
+
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username or email already exists")
+
+    return user
+
 @router.post("/login", response_model=schemas.UserResponse)
 async def login(data: schemas.Login, session: AsyncSession = Depends(get_db)):
     user = await service.login_user(session=session, user=data)
@@ -33,6 +42,15 @@ async def get_user(user_id: UUID, session: AsyncSession = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
+
+@router.get("/{user_id}/is-own-dashboards", response_model=list[DashboardShortResponse])
+async def get_dashboards_where_user_is_own(user_id: UUID, session: AsyncSession = Depends(get_db)):
+    dashboards = await service.get_dashboards_where_user_is_own(session=session, user_id=user_id)
+
+    if not dashboards:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Dashboards not found")
+    return dashboards
+
 
 @router.get("/{user_id}/assigned-tasks", response_model=list[TaskShortResponse])
 async def get_assigned_tasks(user_id: UUID, session: AsyncSession = Depends(get_db)):
@@ -123,15 +141,6 @@ async def remove_user_from_dashboard(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Dashboard membership not found")
 
     return {"detail": "User removed from dashboard"}
-
-@router.post("", response_model=schemas.UserResponse)
-async def post_user(data: schemas.Register, session: AsyncSession = Depends(get_db)):
-    user = await service.create(session=session, user=data)
-
-    if user is None:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username or email already exists")
-
-    return user
 
 @router.delete("/{user_id}")
 async def delete_user(user_id: UUID, session: AsyncSession = Depends(get_db)):
