@@ -10,6 +10,22 @@ from . import service
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
+@router.get("", response_model=list[schemas.TaskResponse])
+async def get_tasks(session: AsyncSession = Depends(get_db)):
+    return await service.get_all_task(session=session)
+
+@router.get("/{task_id}", response_model=schemas.TaskResponse)
+async def get_task(task_id: UUID, session: AsyncSession = Depends(get_db)):
+    task = await service.get_task_by_id(session=session, task_id=task_id)
+
+    if not task:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
+    return task
+
+@router.post("", response_model=schemas.TaskResponse)
+async def create_tasks(data: schemas.CreateTask, session: AsyncSession = Depends(get_db)):
+    return await service.create_task(session=session, task=data)
+
 @router.get("/{task_id}/assignees", response_model=list[UserShortResponse])
 async def get_task_assignees( task_id: UUID, session: AsyncSession = Depends(get_db),
 ):
@@ -31,22 +47,6 @@ async def get_task_tags(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
 
     return tags
-
-@router.get("", response_model=list[schemas.TaskResponse])
-async def get_tasks(session: AsyncSession = Depends(get_db)):
-    return await service.get_all_task(session=session)
-
-@router.get("/{task_id}", response_model=schemas.TaskResponse)
-async def get_task(task_id: UUID, session: AsyncSession = Depends(get_db)):
-    task = await service.get_task_by_id(session=session, task_id=task_id)
-
-    if not task:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
-    return task
-
-@router.post("", response_model=schemas.TaskResponse)
-async def create_tasks(data: schemas.CreateTask, session: AsyncSession = Depends(get_db)):
-    return await service.create_task(session=session, task=data)
 
 @router.put("/{task_id}", response_model=schemas.TaskResponse)
 async def update_tasks(task_id: UUID, data: schemas.UpdateTask, session: AsyncSession = Depends(get_db)):

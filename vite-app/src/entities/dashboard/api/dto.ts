@@ -8,6 +8,14 @@ export interface DashboardResponseDTO {
   updated_at: string | null,
 }
 
+export interface DashboardShortResponseDTO {
+  id: string
+  name: string
+  author_id: string
+  created_at: string
+  updated_at: string | null
+}
+
 export interface CreateDashboardDTO {
   name: string
   members: string[]

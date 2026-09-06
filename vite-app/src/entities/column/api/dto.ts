@@ -8,7 +8,14 @@ export interface ColumnResponseDTO {
   status: Status
 }
 
+export interface ColumnShortResponseDTO {
+  id: string
+  dashboard_id: string
+  status: Status
+}
+
 export interface CreateColumnDTO {
+  dashboard_id: string
   status: Status
 }
 

@@ -9,6 +9,15 @@ from . import service
 
 router = APIRouter(prefix="/columns", tags=["Columns"])
 
+@router.get("", response_model=list[schemas.ColumnShortResponse])
+async def get_columns( session: AsyncSession = Depends(get_db),
+):
+    return await service.get_all_columns(session=session)
+
+@router.post("", response_model=schemas.ColumnResponse)
+async def create_column(data: schemas.CreateColumn, session: AsyncSession = Depends(get_db)):
+    return await service.create_column(session=session, data=data)
+
 @router.get("/{column_id}/tasks", response_model=list[TaskShortResponse])
 async def get_column_tasks( column_id: UUID, session: AsyncSession = Depends(get_db),
 ):
@@ -19,16 +28,6 @@ async def get_column_tasks( column_id: UUID, session: AsyncSession = Depends(get
 
     return tasks
 
-@router.get("/{dashboard_id}/columns", response_model=list[schemas.ColumnShortResponse])
-async def get_column_for_dashboard( dashboard_id: UUID, session: AsyncSession = Depends(get_db),
-):
-    return await service.get_columns_by_dashboard_id(session=session, dashboard_id=dashboard_id)
-
-@router.get("", response_model=list[schemas.ColumnShortResponse])
-async def get_columns( session: AsyncSession = Depends(get_db),
-):
-    return await service.get_all_columns(session=session)
-
 @router.get("/{column_id}", response_model=schemas.ColumnShortResponse)
 async def get_column(column_id: UUID, session: AsyncSession = Depends(get_db),
 ):
@@ -38,10 +37,6 @@ async def get_column(column_id: UUID, session: AsyncSession = Depends(get_db),
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Column not found")
 
     return column
-
-@router.post("", response_model=schemas.ColumnResponse)
-async def create_column(data: schemas.CreateColumn, session: AsyncSession = Depends(get_db)):
-    return await service.create_column(session=session, data=data)
 
 @router.put("/{column_id}", response_model=schemas.ColumnResponse)
 async def update_column(column_id: UUID, data: schemas.UpdateColumn, session: AsyncSession = Depends(get_db)):

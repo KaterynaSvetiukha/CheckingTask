@@ -8,6 +8,23 @@ from . import service
 
 router = APIRouter(prefix="/tags", tags=["Tags"])
 
+@router.get("", response_model=list[schemas.TagResponse])
+async def get_tags(session: AsyncSession = Depends(get_db)):
+    return await service.get_all_tags(session=session)
+
+@router.post("", response_model=schemas.TagResponse)
+async def create_tag(data: schemas.CreateTag, session: AsyncSession = Depends(get_db)):
+    return await service.create_tag(session=session, tag=data)
+
+@router.get("/{tag_id}/tasks")
+async def get_tag_tasks(tag_id: UUID, session: AsyncSession = Depends(get_db)):
+    data = await service.get_tasks_for_tag(session=session, tag_id=tag_id)
+
+    if data is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Tag not found')
+
+    return data
+
 @router.post("/{tag_id}/tasks/{task_id}", status_code=201)
 async def add_tag_to_task(
     tag_id: UUID,
@@ -27,25 +44,6 @@ async def add_tag_to_task(
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Tag is already assigned to task")
 
     return {"detail": "Tag added to task"}
-
-@router.get("", response_model=list[schemas.TagResponse])
-async def get_tags(session: AsyncSession = Depends(get_db)):
-    return await service.get_all_tags(session=session)
-
-@router.get("/{tag_id}/tasks")
-async def get_tag_tasks(tag_id: UUID, session: AsyncSession = Depends(get_db)):
-    data = await service.get_tasks_for_tag(session=session, tag_id=tag_id)
-
-    if data is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Tag not found')
-
-    return data
-
-@router.post("", response_model=schemas.TagResponse)
-async def create_tag(data: schemas.CreateTag, session: AsyncSession = Depends(get_db)):
-    return await service.create_tag(session=session, tag=data)
-
-
 
 @router.delete("/{tag_id}")
 async def delete_tag(tag_id: UUID, session: AsyncSession = Depends(get_db)):
