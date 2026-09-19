@@ -89,40 +89,42 @@ export const DashboardsPage = () => {
           </div>
         </div>
         {isCreating && (
-          <form
-            onSubmit={handleCreateDashboard}
-            className="flex max-w-3xl flex-col gap-5 rounded-xl border border-purple-500/40 bg-purple-950/40 p-4"
-          >
-            <div className="flex flex-col gap-1">
-              <label htmlFor="name">Enter dashboard name</label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                onChange={(e) => setNewDashboardName(e.target.value)}
-                autoFocus
-                required
-                value={newDashboardName}
-                className="sm:flex-1text-sm w-full rounded-lg border border-purple-800/50 bg-purple-900/30 px-3.5 py-2 text-white focus:ring-2 focus:ring-purple-400 focus:outline-none"
-              />
-            </div>
-            <div className="flex w-full items-center justify-between">
-              <Button
-                type="submit"
-                disabled={createMunation.isPending}
-                className="flex-1 bg-purple-600 p-4 text-white hover:bg-purple-500 sm:flex-initial"
-              >
-                {createMunation.isPending ? "Creating..." : "Create"}
-              </Button>
-              <Button
-                type="button"
-                onClick={() => setIsCreating(false)}
-                className="border-slate-950 bg-slate-950 p-4 text-purple-300 hover:bg-slate-800"
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
+          <div className="flex w-full items-center justify-center">
+            <form
+              onSubmit={handleCreateDashboard}
+              className="max-w-2xl flex-col flex w-full gap-5 rounded-xl border border-purple-500/40 bg-purple-950/40 p-4"
+            >
+              <div className="flex flex-col gap-1">
+                <label htmlFor="name">Enter dashboard name</label>
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  onChange={(e) => setNewDashboardName(e.target.value)}
+                  autoFocus
+                  required
+                  value={newDashboardName}
+                  className="sm:flex-1text-sm w-full rounded-lg border border-purple-800/50 bg-purple-900/30 px-3.5 py-2 text-white focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                />
+              </div>
+              <div className="flex w-full items-center justify-between">
+                <Button
+                  type="submit"
+                  disabled={createMunation.isPending}
+                  className="flex-1 bg-purple-600 p-4 text-white hover:bg-purple-500 sm:flex-initial"
+                >
+                  {createMunation.isPending ? "Creating..." : "Create"}
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => setIsCreating(false)}
+                  className="border-slate-950 bg-slate-950 p-4 text-purple-300 hover:bg-slate-800"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </div>
         )}
 
         {isLoading ? (
