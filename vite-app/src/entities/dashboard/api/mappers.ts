@@ -1,5 +1,5 @@
 import type { Dashboard, CreateDashboardInput, UpdateDashboardInput } from "../model/types"
-import type { DashboardResponseDTO, CreateDashboardDTO, UpdateDashboardDTO } from "./dto"
+import type { DashboardResponseDTO, CreateDashboardDTO, UpdateDashboardDTO, DashboardShortResponseDTO } from "./dto"
 
 export function mapDashboardResponse(dto: DashboardResponseDTO): Dashboard {
   return {
@@ -8,6 +8,18 @@ export function mapDashboardResponse(dto: DashboardResponseDTO): Dashboard {
     author: dto.author_id,
     columns: dto.columns ?? [],
     members: dto.members ?? [],
+    createdAt: new Date(dto.created_at),
+    updatedAt: dto.updated_at ? new Date(dto.updated_at) : null,
+  }
+}
+
+export function mapDashboarShortResponse(dto: DashboardShortResponseDTO): Dashboard {
+  return {
+    id: dto.id,
+    name: dto.name,
+    author: dto.author_id,
+    columns: [],
+    members: [],
     createdAt: new Date(dto.created_at),
     updatedAt: dto.updated_at ? new Date(dto.updated_at) : null,
   }

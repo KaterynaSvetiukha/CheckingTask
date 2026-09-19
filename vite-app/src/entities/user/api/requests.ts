@@ -3,7 +3,9 @@ import type { User} from "../model/types"
 import type { LoginDTO, RegisterDTO, UserResponseDTO } from "./dto"
 import { mapUserResponse } from "./mappers"
 import type { DashboardShortResponseDTO } from "@/entities/dashboard/api/dto"
-import type { TaskShortResponseDTO } from "@/entities/task/api/dto"
+import type { Dashboard } from "@/entities/dashboard/model/types"
+import type { Task } from "@/entities/task/model/types"
+import { mapDashboarShortResponse } from "@/entities/dashboard/api/mappers"
 
 export const userApi = {
   getSearch: async (query: string): Promise<User[]> => {
@@ -27,14 +29,20 @@ export const userApi = {
   deleteUser: (id: string) =>
     ClientApi.delete<{ detail: string }>(`/users/${id}`),
 
-  getDashboardsWhereUserIsOwn: (id: string) =>
-    ClientApi.get<DashboardShortResponseDTO[]>(
-      `/users/${id}/is-own-dashboards`
-    ),
+  getDashboardsWhereUserIsOwn: async (id: string) => {
+    const dtos = await ClientApi.get<DashboardShortResponseDTO[]>(
+      `/users/${id}/is-own-dashboards`)
+    return dtos.map(mapDashboarShortResponse)
+  },
   getUserTasks: (id: string) =>
-    ClientApi.get<TaskShortResponseDTO[]>(`/users/${id}/assigned-tasks`),
-  getUserDashboards: (id: string) =>
-    ClientApi.get<DashboardShortResponseDTO[]>(`/users/${id}/dashboards`),
+    ClientApi.get<Task[]>(`/users/${id}/assigned-tasks`),
+
+  getUserDashboards: async (id: string): Promise<Dashboard[]> => {
+    const dtos = await ClientApi.get<DashboardShortResponseDTO[]>(
+      `/users/${id}/dashboards`
+    )
+    return dtos.map(mapDashboarShortResponse)
+  },
 
   addUserToTask: (user_id: string, task_id: string) =>
     ClientApi.post<{ detail: string }>(
@@ -46,7 +54,7 @@ export const userApi = {
       `/users/${user_id}/dashboards/${dashboard_id}`,
       {}
     ),
-  
+
   deleteUserFromTask: (user_id: string, task_id: string) =>
     ClientApi.delete<{ detail: string }>(`/users/${user_id}/tasks/${task_id}`),
   deleteUserFromDashboard: (user_id: string, dashboard_id: string) =>
